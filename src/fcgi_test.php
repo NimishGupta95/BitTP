@@ -7,7 +7,7 @@ require('FCGIClient.php');
 $requests = array();
 
 // Perform 4 parrallel requests.
-for ($i = 0 ; $i < 1; $i++) {
+//for ($i = 0 ; $i < 1; $i++) {
 
     $client = new \framework\FCGIClient('localhost', '8888');
 
@@ -27,17 +27,17 @@ for ($i = 0 ; $i < 1; $i++) {
         ''
     );
 
-    $requests[] = $client;
-}
+//    $requests[] = $client;
+//}
 
 // Collect the responses from the previous requests.
-for ($i = 0; $i < 1; $i++) {
-    $response = $requests[$i]->response();
-    
+//for ($i = 0; $i < 1; $i++) {
+  //  $response = $requests[$i]->response();
+    $response = $client->response();
     if (!empty($response)) {
         //echo print_r($response, true);
         echo print_r($response["body"],true);
-    }
+//    }
 }
 
 ?>
