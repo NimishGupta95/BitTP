@@ -39,14 +39,28 @@ else
 $result = socket_bind($socket, $socketHost, $socketPort) or die("ERROR: Could not bind to port\n");
 
 for(;;) {
-	
-	
-	
+
 	$result = socket_listen($socket, 3) or die("ERROR: Could not set up socket listener\n");
 	$spawn = socket_accept($socket) or die("ERROR: Could not accept incoming connection\n");
 	$input = socket_read($spawn, 1024) or die("ERROR: Could not read input\n");
 	$input = trim($input);
+	
+	//#### CLEAN UP REQUIRED ####//
+	
+	preg_match('/GET.+/', $input, $matches);
 
+	$a = substr($matches[0],3);
+
+	$fileName = substr($a, 0,strlen($a)-9);
+
+	$fileName = trim($fileName);
+	preg_match('/[?].*/', $fileName, $matches);
+	if(isset($matches[0])) {
+		echo $matches[0]."\n";
+		$queryStr = trim($matches[0]);
+		$fileName = str_replace($queryStr,'',$fileName);
+	}
+	
 	/*
 
 	//#### THIS CODE WILL BE USED ONLY FOR NON-HTML FILES. PHP-CGI CAN HANDLE NORMAL HTML FILES ALSO ####//
@@ -65,14 +79,15 @@ for(;;) {
 		array(
 			'GATEWAY_INTERFACE'	=> 'FastCGI/1.0',
 			'REQUEST_METHOD'	=> 'GET',
-			'SCRIPT_FILENAME'	=> '/www/index.php?=PHPE9568F34-D428-11d2-A769-00AA001ACF42',
+			'SCRIPT_FILENAME'	=> '/www'.$fileName,
 			'SERVER_SOFTWARE'	=> 'php/fcgiclient',
 			'REMOTE_ADDR'		=> '127.0.0.1',
 			'REMOTE_PORT'		=> '8888',
 			'SERVER_ADDR'		=> '127.0.0.1',
 			'SERVER_PORT'		=> '8888',
 			'SERVER_NAME'		=> php_uname('n'),
-			'SERVER_PROTOCOL'	=> 'HTTP/1.1'
+			'SERVER_PROTOCOL'	=> 'HTTP/1.1',
+			'QUERY_STRING'		=> substr($queryStr,1)
 		),
 		''
 	);
